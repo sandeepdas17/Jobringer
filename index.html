@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JobRinger - Find Your Dream Career</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* yeah i know css variables are cool but whatever */
+        :root {
+            --main-purple: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --pink-grad: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            --blue-stuff: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            --bg-dark: #0f0f23;
+            --card-bg: rgba(255, 255, 255, 0.1);
+            --white-text: #ffffff;
+            --grey-text: #b8c1ec;
+            --glass-effect: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.1);
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--bg-dark);
+            color: var(--white-text);
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        /* cool animated bg i found online */
+        .bg-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: linear-gradient(45deg, #0f0f23, #1a1a3e, #2d2d5f);
+            background-size: 400% 400%;
+            animation: gradientMove 15s ease infinite;
+        }
+
+        .bg-animation::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Ccircle cx='30' cy='30' r='2'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+            animation: floatUp 20s linear infinite;
+        }
+
+        @keyframes gradientMove {
+            0%, 100% { 
+                background-position: 0% 50%; 
+            }
+            50% { 
+                background-position: 100% 50%; 
+            }
+        }
+
+        @keyframes floatUp {
+            0% { 
+                transform: translateY(0px); 
+            }
+            100% { 
+                transform: translateY(-60px); 
+            }
+        }
+
+        /* header stuff */
+        header {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+            backdrop-filter: blur(20px);
+            background: var(--glass-effect);
+            border-bottom: 1px solid var(--glass-border);
+            transition: all 0.3s ease;
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .logo {
+            font-size: 2rem;
+            font-weight: bold;
+            background: var(--main-purple);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .logo:hover {
+            transform: scale(1.05);
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            color: var(--white-text);
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        /* this hover effect took me forever to get right */
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--blue-stuff);
+            transition: width 0.3s ease;
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        .cta-btn {
+            background: var(--pink-grad);
+            color: white;
+            padding: 0.8rem 2rem;
+            border: none;
+            border-radius: 50px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(245, 87, 108, 0.3);
+        }
+
+        .cta-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(245, 87, 108, 0.4);
+        }
+
+        /* main hero area */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 2rem;
+            padding-top: 6rem;
+            position: relative;
+        }
+
+        .hero-content {
+            max-width: 800px;
+            z-index: 2;
+        }
+
+        .hero h1 {
+            font-size: clamp(3rem, 8vw, 6rem);
+            font-weight: 800;
+            margin-bottom: 1.5rem;
+            background: var(--main-purple);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: slideFromBottom 1s ease-out;
+            letter-spacing: 0.02em;
+        }
+
+        .hero p {
+            font-size: 1.5rem;
+            color: var(--grey-text);
+            margin-bottom: 3rem;
+            animation: slideFromBottom 1s ease-out 0.2s backwards;
+        }
+
+        @keyframes slideFromBottom {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* search box */
+        .search-box {
+            background: var(--glass-effect);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 2rem;
+            margin: 3rem auto;
+            max-width: 900px;
+            animation: slideFromBottom 1s ease-out 0.4s backwards;
+        }
+
+        .search-form {
+            display: grid;
+            grid-template-columns: 1fr 1fr auto;
+            gap: 1rem;
+            align-items: end;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .input-group label {
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--grey-text);
+        }
+
+        .input-group input, .input-group select {
+            padding: 1rem;
+            border: 1px solid var(--glass-border);
+            border-radius: 10px;
+            background: var(--glass-effect);
+            color: var(--white-text);
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .input-group input:focus, .input-group select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .search-button {
+            background: var(--blue-stuff);
+            color: white;
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(79, 172, 254, 0.3);
+        }
+
+        .search-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(79, 172, 254, 0.4);
+        }
+
+        /* stats section - pretty basic */
+        .stats {
+            padding: 5rem 2rem;
+            text-align: center;
+        }
+
+        .stats-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 3rem;
+        }
+
+        .stat-card {
+            background: var(--glass-effect);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 3rem 2rem;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .big-number {
+            font-size: 3rem;
+            font-weight: bold;
+            background: var(--main-purple);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            display: block;
+            margin-bottom: 1rem;
+        }
+
+        .stat-text {
+            font-size: 1.2rem;
+            color: var(--grey-text);
+            font-weight: 600;
+        }
+
+        /* features section */
+        .features {
+            padding: 5rem 2rem;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+        }
+
+        .features-wrapper {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .big-title {
+            text-align: center;
+            font-size: 3rem;
+            font-weight: bold;
+            margin-bottom: 3rem;
+            background: var(--main-purple);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 3rem;
+        }
+
+        .feature-box {
+            background: var(--glass-effect);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 3rem;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* this line effect is neat */
+        .feature-box::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: var(--blue-stuff);
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+
+        .feature-box:hover::before {
+            transform: scaleX(1);
+        }
+
+        .feature-box:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .feature-icon {
+            width: 60px;
+            height: 60px;
+            background: var(--pink-grad);
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .feature-heading {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 1rem;
+            color: var(--white-text);
+        }
+
+        .feature-desc {
+            color: var(--grey-text);
+            line-height: 1.6;
+        }
+
+        /* mobile hamburger menu */
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            cursor: pointer;
+        }
+
+        .hamburger span {
+            width: 25px;
+            height: 3px;
+            background: var(--white-text);
+            margin: 3px 0;
+            transition: 0.3s;
+        }
+
+        /* responsive stuff - hate doing this but oh well */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+
+            .hamburger {
+                display: flex;
+            }
+
+            .search-form {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+
+            .hero h1 {
+                font-size: 3rem;
+            }
+
+            .hero p {
+                font-size: 1.2rem;
+            }
+
+            nav {
+                padding: 1rem;
+            }
+
+            .search-box {
+                margin: 2rem 1rem;
+                padding: 1.5rem;
+            }
+
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* scroll animations */
+        .fade-up {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.6s ease;
+        }
+
+        .fade-up.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* chat button in corner */
+        .chat-button {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            width: 60px;
+            height: 60px;
+            background: var(--pink-grad);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: white;
+            cursor: pointer;
+            box-shadow: 0 4px 20px rgba(245, 87, 108, 0.4);
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        .chat-button:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 25px rgba(245, 87, 108, 0.5);
+        }
+    </style>
+</head>
+<body>
+    <!-- bg animation -->
+    <div class="bg-animation"></div>
+
+    <!-- top nav -->
+    <header>
+        <nav>
+            <div class="logo">JobRinger</div>
+            <ul class="nav-links">
+                <li><a href="#home">Home</a></li>
+                <li><a href="#jobs">Jobs</a></li>
+                <li><a href="#companies">Companies</a></li>
+                <li><a href="#resources">Resources</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+            <button class="cta-btn">Post Job</button>
+            <div class="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </nav>
+    </header>
+
+    <!-- main hero -->
+    <section class="hero" id="home">
+        <div class="hero-content">
+            <h1>Find Your Dream Career</h1>
+            <p>Discover amazing opportunities and connect with top employers worldwide</p>
+            
+            <div class="search-box">
+                <form class="search-form">
+                    <div class="input-group">
+                        <label for="job-title">Job Title</label>
+                        <input type="text" id="job-title" placeholder="e.g. Software Engineer">
+                    </div>
+                    <div class="input-group">
+                        <label for="location">Location</label>
+                        <select id="location">
+                            <option value="">Select Location</option>
+                            <option value="mumbai">Mumbai</option>
+                            <option value="delhi">Delhi NCR</option>
+                            <option value="bangalore">Bangalore</option>
+                            <option value="hyderabad">Hyderabad</option>
+                            <option value="pune">Pune</option>
+                            <option value="chennai">Chennai</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="search-button">🔍 Search</button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- stats numbers -->
+    <section class="stats fade-up">
+        <div class="stats-container">
+            <div class="stat-card">
+                <span class="big-number">11,000+</span>
+                <span class="stat-text">Active Jobs</span>
+            </div>
+            <div class="stat-card">
+                <span class="big-number">5,000+</span>
+                <span class="stat-text">Companies</span>
+            </div>
+            <div class="stat-card">
+                <span class="big-number">100K+</span>
+                <span class="stat-text">Job Seekers</span>
+            </div>
+            <div class="stat-card">
+                <span class="big-number">98%</span>
+                <span class="stat-text">Success Rate</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- why choose us -->
+    <section class="features fade-up">
+        <div class="features-wrapper">
+            <h2 class="big-title">Why Choose JobRinger?</h2>
+            <div class="features-grid">
+                <div class="feature-box">
+                    <div class="feature-icon">🚀</div>
+                    <h3 class="feature-heading">Quick Applications</h3>
+                    <p class="feature-desc">Apply to multiple jobs with just one click. Our smart application system saves your time and increases your chances.</p>
+                </div>
+                <div class="feature-box">
+                    <div class="feature-icon">🎯</div>
+                    <h3 class="feature-heading">Smart Matching</h3>
+                    <p class="feature-desc">AI-powered job recommendations based on your skills, experience, and preferences for perfect career matches.</p>
+                </div>
+                <div class="feature-box">
+                    <div class="feature-icon">💼</div>
+                    <h3 class="feature-heading">Top Companies</h3>
+                    <p class="feature-desc">Connect directly with hiring managers from Fortune 500 companies and innovative startups.</p>
+                </div>
+                <div class="feature-box">
+                    <div class="feature-icon">📱</div>
+                    <h3 class="feature-heading">Mobile First</h3>
+                    <p class="feature-desc">Search and apply for jobs on the go with our mobile-optimized platform and dedicated app.</p>
+                </div>
+                <div class="feature-box">
+                    <div class="feature-icon">⚡</div>
+                    <h3 class="feature-heading">Instant Alerts</h3>
+                    <p class="feature-desc">Get notified instantly when new jobs matching your criteria are posted. Never miss an opportunity.</p>
+                </div>
+                <div class="feature-box">
+                    <div class="feature-icon">🏆</div>
+                    <h3 class="feature-heading">Career Growth</h3>
+                    <p class="feature-desc">Access exclusive career resources, skill assessments, and professional development opportunities.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- chat button -->
+    <div class="chat-button">💬</div>
+
+    <script>
+        // smooth scroll for nav links - basic stuff
+        document.querySelectorAll('a[href^="#"]').forEach(link => {
+            link.addEventListener('click', function (e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href');
+                const targetSection = document.querySelector(targetId);
+                if (targetSection) {
+                    targetSection.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // intersection observer for animations
+        const fadeElements = document.querySelectorAll('.fade-up');
+        const fadeObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('show');
+                }
+            });
+        }, {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        });
+
+        fadeElements.forEach(el => {
+            fadeObserver.observe(el);
+        });
+
+        // hide/show header on scroll
+        let previousScrollY = window.scrollY;
+        
+        window.addEventListener('scroll', () => {
+            const header = document.querySelector('header');
+            const currentScrollY = window.scrollY;
+            
+            if (currentScrollY > previousScrollY && currentScrollY > 100) {
+                header.style.transform = 'translateY(-100%)';
+            } else {
+                header.style.transform = 'translateY(0)';
+            }
+            previousScrollY = currentScrollY;
+        });
+
+        // search form handling
+        const searchForm = document.querySelector('.search-form');
+        searchForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const jobInput = document.getElementById('job-title').value;
+            const locationSelect = document.getElementById('location').value;
+            
+            if (jobInput || locationSelect) {
+                const btn = document.querySelector('.search-button');
+                btn.innerHTML = '⏳ Searching...';
+                btn.disabled = true;
+                
+                // fake loading time
+                setTimeout(() => {
+                    btn.innerHTML = '🔍 Search';
+                    btn.disabled = false;
+                    alert(`Searching for "${jobInput}" jobs in "${locationSelect || 'All locations'}"`);
+                }, 2000);
+            } else {
+                alert('Please enter a job title or select a location');
+            }
+        });
+
+        // chat button click
+        document.querySelector('.chat-button').addEventListener('click', function() {
+            alert('Chat support coming soon! 💬');
+        });
+
+        // animate the numbers when they come into view
+        function animateStats() {
+            const numberElements = document.querySelectorAll('.big-number');
+            
+            numberElements.forEach(element => {
+                const finalNumber = parseInt(element.textContent.replace(/[^0-9]/g, ''));
+                let currentNumber = 0;
+                const increment = finalNumber / 100;
+                
+                const timer = setInterval(() => {
+                    currentNumber += increment;
+                    if (currentNumber >= finalNumber) {
+                        currentNumber = finalNumber;
+                        clearInterval(timer);
+                    }
+                    
+                    // keep the original formatting
+                    const suffix = element.textContent.replace(/[0-9,]/g, '');
+                    element.textContent = Math.floor(currentNumber).toLocaleString() + suffix;
+                }, 20);
+            });
+        }
+
+        // trigger number animation when stats section appears
+        const statsSection = document.querySelector('.stats');
+        const statsObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    animateStats();
+                    statsObserver.unobserve(entry.target);
+                }
+            });
+        });
+
+        if (statsSection) {
+            statsObserver.observe(statsSection);
+        }
+
+        // mobile menu toggle - just basic toggle for now
+        const mobileMenu = document.querySelector('.hamburger');
+        if (mobileMenu) {
+            mobileMenu.addEventListener('click', function() {
+                this.classList.toggle('active');
+                // TODO: add actual mobile menu functionality later
+            });
+        }
+    </script>
+</body>
+</html>
